@@ -1,0 +1,8 @@
+build/**
+build
+lib
+lib/**
+bin
+bin/**
+.vscode
+.cache

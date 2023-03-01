@@ -72,7 +72,7 @@ extern    PythonPlugin *python_plugin;
 #define IS_INT(x) (PyObject_IsInstance(x.ptr(), (PyObject*)&PyInt_Type))
 
 // decode a Python exception into a string.
-// std::string handle_pyerror()		// lyf
+// std::string handle_pyerror() 		// lyf 
 // {
 //     using namespace boost::python;
 //     using namespace boost;

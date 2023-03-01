@@ -17,7 +17,7 @@
 #include <string.h>
 #include <ctype.h>
 // #include "emcglb.h" // lyf
-// #include "emctool.h" // lyf
+#include "emctool.h"
 #include "tool_parse.h"
 #include <rtapi_string.h>
 

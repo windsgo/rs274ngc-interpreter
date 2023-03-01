@@ -10,11 +10,7 @@ target_include_directories(sai SYSTEM PUBLIC
     ${Python2_INCLUDE_DIRS} 
     ${Boost_INCLUDE_DIR} 
     ${PROJECT_SOURCE_DIR}/nml_intf/
-    ${PROJECT_SOURCE_DIR}/motion/
-    ${PROJECT_SOURCE_DIR}/pythonplugin/
-    ${PROJECT_SOURCE_DIR}/rtapi/
     ${PROJECT_SOURCE_DIR}/inifile/
-    ${PROJECT_SOURCE_DIR}/hal/
     ${PROJECT_SOURCE_DIR}/rs274ngc/
     ${PROJECT_SOURCE_DIR}
 )

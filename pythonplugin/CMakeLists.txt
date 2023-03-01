@@ -8,12 +8,8 @@ target_include_directories(pythonplugin SYSTEM PUBLIC
     ${Python2_INCLUDE_DIRS} 
     ${Boost_INCLUDE_DIR} 
     ${PROJECT_SOURCE_DIR}/nml_intf/
-    ${PROJECT_SOURCE_DIR}/motion/
-    ${PROJECT_SOURCE_DIR}/tooldata/
-    ${PROJECT_SOURCE_DIR}/pythonplugin/
     ${PROJECT_SOURCE_DIR}/rtapi/
     ${PROJECT_SOURCE_DIR}/inifile/
-    ${PROJECT_SOURCE_DIR}/hal/
     ${PROJECT_SOURCE_DIR}
 )
 target_link_libraries(pythonplugin ${Boost_LIBRARIES} ${Python2_LIBRARIES} inifile)

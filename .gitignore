@@ -6,3 +6,11 @@ bin
 bin/**
 .vscode
 .cache
+
+*.ngc
+*.txt
+
+!CMakeLists.txt
+
+*.var
+*.var.bak

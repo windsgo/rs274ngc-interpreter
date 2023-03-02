@@ -231,7 +231,7 @@ int Interp::fetch_ini_param( const char *nameBuf, int *status, double *value)
 // the shortest possible ini variable is '_hal[x]' or 7 chars long .
 int Interp::fetch_hal_param( const char *nameBuf, int *status, double *value)
 {
-#ifndef RS274_NO_HAL
+#ifndef RS274_NO_HAL // lyf
     static int comp_id;
     int retval;
     int type = 0;

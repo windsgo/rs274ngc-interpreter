@@ -4,6 +4,7 @@ add_library(rs274 SHARED ${RS274_SRC})
 
 add_dependencies(rs274 pythonplugin)
 add_dependencies(rs274 inifile)
+add_dependencies(rs274 posemath)
 
 target_compile_definitions(rs274 PRIVATE EMC2_HOME="")
 target_compile_definitions(rs274 PRIVATE PACKAGE_VERSION="2.8.4")
@@ -19,6 +20,7 @@ target_include_directories(rs274 PUBLIC
     ${PROJECT_SOURCE_DIR}/pythonplugin/
     ${PROJECT_SOURCE_DIR}/rtapi/
     ${PROJECT_SOURCE_DIR}/inifile/
+    ${PROJECT_SOURCE_DIR}/posemath/
     ${PROJECT_SOURCE_DIR}
 )
-target_link_libraries(rs274 pythonplugin inifile ${Boost_LIBRARIES} ${Python2_LIBRARIES} )
+target_link_libraries(rs274 pythonplugin inifile posemath nml_intf ${Boost_LIBRARIES} ${Python2_LIBRARIES} )

@@ -16,8 +16,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
-set(BOOST_ROOT $ENV{HOME}/Boost_1_79_0/lib/cmake/)
-print_variable(Boost_DIR)
+if (NOT BOOST_ROOT)
+    set(BOOST_ROOT $ENV{HOME}/Boost_1_79_0/lib/cmake/)
+endif()
+print_variable(BOOST_ROOT)
 
 find_package(Boost COMPONENTS python REQUIRED)
 print_variable(Boost_VERSION)
@@ -36,9 +38,16 @@ print_variable(Python2_LIBRARIES)
 # print_variable(Python3_INCLUDE_DIRS)
 # print_variable(Python3_LIBRARIES)
 
-# add_subdirectory(rtapi)
+# object libs
+add_subdirectory(posemath)
+add_subdirectory(nml_intf)
 add_subdirectory(inifile)
 add_subdirectory(pythonplugin)
-add_subdirectory(rs274ngc)
+
+# shared lib which links all the above
+add_subdirectory(rs274ngc) # librs274.so
+
+# binaries
 add_subdirectory(sai)
+add_subdirectory(tests)
 

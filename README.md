@@ -4,11 +4,70 @@ This is part of the `linuxcnc` project, I pick these codes out, and make a libra
 which provides cmake configs for `find_package`. This might probably ease the way 
 we use this interpreter.
 
-Present I have built this library and the `SAI` which is the stand alone
-interpreter. But notice that I *HAVE NOT* exported the `SAI`, just the library
-itself. 
+Currently I have built this library and the `SAI` which is the stand alone
+interpreter, and export them to install. 
 
-I'll do that later.
+## Example
+
+An example to use this library,
+
+See [https://github.com/windsgo/rs274-sai-compile-example](https://github.com/windsgo/rs274-sai-compile-example)
+
+## Build Steps
+
+### Makefile Way (also use cmake in makefile)
+
+Use the Makefile provided. 
+
+1. Modify the `boost_root` and `install_dir` in the Makefile
+
+2. Build it
+
+```bash
+make
+```
+
+3. install
+
+```bash
+make install
+```
+
+4. run `sai` test
+
+```bash
+./test.sh
+```
+
+### CMake Step By Step
+1. configure
+
+You need to set **your own variable and prefix** in the following command
+
+```cmake
+cmake -B build -DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=${install_dir} \
+	-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+	-DBOOST_ROOT=__YOUR_PREFIX_1__/lib
+```
+2. build
+
+```cmake
+cmake --build build -j8
+```
+
+3. install
+
+```
+cmake --install build
+```
+
+4. run test
+
+```bash
+./test.sh
+```
+
 
 ## COMPILE NOTICE
 
@@ -23,10 +82,7 @@ target_compile_definitions(sai
 )
 ```
 
-- Later I will give an example how to build the `SAI` out of this project.
-And I will tell you what to notice. That's important.
-
-### About RUNTIME Path
+## About RUNTIME Path
 
 I have the following code in CMakeLists.txt:
 

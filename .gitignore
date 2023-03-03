@@ -9,7 +9,7 @@ install/**
 .vscode
 .cache
 
-*.ngc
+# *.ngc
 *.txt
 
 !CMakeLists.txt

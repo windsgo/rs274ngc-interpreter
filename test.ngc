@@ -1,0 +1,12 @@
+(DEBUG, hello)
+G90 F1
+#1 = 20
+(DEBUG, #1)
+o100 while [#1 LT 22]
+    #1 = [#1 + 1]
+    (DEBUG, inwhile, par1=#1)
+o100 endwhile
+(DEBUG, out, par1=#1)
+(DEBUG, 72, par1=#1)
+G00 x1 y2 z3 a4 b5 c6
+m2

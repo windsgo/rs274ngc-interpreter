@@ -59,6 +59,10 @@
     information, go to www.linuxcnc.org.
 */
 
+#ifndef ULAPI
+#define ULAPI
+#endif
+
 #if ( !defined RTAPI ) && ( !defined ULAPI )
 #error "Please define either RTAPI or ULAPI!"
 #endif

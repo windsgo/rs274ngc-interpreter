@@ -36,8 +36,12 @@
 #undef EMC2_DEFAULT_NMLFILE
 
 /* Default nml file */
-#ifndef EMC2_DEFAULT_TOOLTABLE
+#ifndef EMC2_DEFAULT_TOOLTABLE // recommand to define this while compiling
+#ifdef __RS274_ROOT__
 #define EMC2_DEFAULT_TOOLTABLE __RS274_ROOT__ "sim.tbl" // lyf
+#else
+#define EMC2_DEFAULT_TOOLTABLE "sim.tbl" // lyf
+#endif
 #endif
 
 /* Directory for help files */

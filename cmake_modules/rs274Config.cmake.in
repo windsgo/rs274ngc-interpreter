@@ -1,0 +1,10 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/rs274Targets.cmake")
+
+set(rs274_INCLUDE_DIR @CMAKE_INSTALL_PREFIX@/include/)
+
+add_compile_definitions(ULAPI)
+add_compile_definitions(rtapi_snprintf=snprintf)
+
+check_required_components(rs274)

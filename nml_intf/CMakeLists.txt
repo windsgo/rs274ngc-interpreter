@@ -5,10 +5,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 add_dependencies(nml_intf posemath)
 
 target_include_directories(nml_intf PUBLIC
-    ${PROJECT_SOURCE_DIR}
-    ${PROJECT_SOURCE_DIR}/posemath/
-    ${PROJECT_SOURCE_DIR}/rtapi/
-    ${PROJECT_SOURCE_DIR}/motion/
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/motion>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/rtapi>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/posemath>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include/rs274>
 )
 
-target_link_libraries(nml_intf posemath)
+target_link_libraries(nml_intf PUBLIC
+    posemath
+)

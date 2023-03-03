@@ -4,6 +4,8 @@ lib
 lib/**
 bin
 bin/**
+install
+install/**
 .vscode
 .cache
 

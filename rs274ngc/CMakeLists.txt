@@ -13,14 +13,21 @@ target_compile_definitions(rs274 PRIVATE RS274_NO_HAL)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 target_include_directories(rs274 PUBLIC
-    ${Python2_INCLUDE_DIRS} 
-    ${Boost_INCLUDE_DIR} 
-    ${PROJECT_SOURCE_DIR}/nml_intf/
-    ${PROJECT_SOURCE_DIR}/motion/
-    ${PROJECT_SOURCE_DIR}/pythonplugin/
-    ${PROJECT_SOURCE_DIR}/rtapi/
-    ${PROJECT_SOURCE_DIR}/inifile/
-    ${PROJECT_SOURCE_DIR}/posemath/
-    ${PROJECT_SOURCE_DIR}
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/nml_intf>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/motion>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/pythonplugin>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/rtapi>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inifile>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/posemath>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include/rs274>
 )
-target_link_libraries(rs274 pythonplugin inifile posemath nml_intf ${Boost_LIBRARIES} ${Python2_LIBRARIES} )
+
+target_link_libraries(rs274 PRIVATE 
+    $<BUILD_INTERFACE:pythonplugin>
+    $<BUILD_INTERFACE:inifile>
+    $<BUILD_INTERFACE:posemath>
+    $<BUILD_INTERFACE:nml_intf>
+    Boost::python
+    Python2::Python
+)

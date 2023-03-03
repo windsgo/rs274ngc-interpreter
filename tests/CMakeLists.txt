@@ -1,4 +1,4 @@
-add_executable(test test.cc)
+add_executable(test test.cc builtin_modules.cc)
 add_dependencies(test rs274)
 
 target_compile_options(test PUBLIC -Wno-return-type)

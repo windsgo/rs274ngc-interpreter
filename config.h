@@ -37,18 +37,14 @@
 
 /* Default nml file */
 #ifndef EMC2_DEFAULT_TOOLTABLE // recommand to define this while compiling
-#ifdef __RS274_ROOT__
-#define EMC2_DEFAULT_TOOLTABLE __RS274_ROOT__ "sim.tbl" // lyf
-#else
 #define EMC2_DEFAULT_TOOLTABLE "sim.tbl" // lyf
-#endif
 #endif
 
 /* Directory for help files */
 #undef EMC2_HELP_DIR
 
 /* Prefix or RIP directory */
-#ifndef EMC2_HOME
+#ifndef EMC2_HOME // this is not important for interpreter
 #define EMC2_HOME "" // lyf
 #endif
 

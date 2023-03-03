@@ -4,14 +4,27 @@ cmake_minimum_required(VERSION 3.14)
 ## project define
 project(rs274 LANGUAGES CXX C VERSION 1.0.0)
 
+## BUILD_TYPE
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
 ## include function print_variable()
 include(${PROJECT_SOURCE_DIR}/cmake/printv.cmake)
 
+# install 相关
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
+print_variable(CMAKE_INSTALL_PREFIX)
+print_variable(CMAKE_INSTALL_LIBDIR)
+print_variable(CMAKE_INSTALL_INCLUDEDIR)
+print_variable(CMAKE_INSTALL_BINDIR)
+
 ## compile definitions
-# 指定项目源码根目录
-# add_compile_definitions(__RS274_ROOT__="${PROJECT_SOURCE_DIR}/")
-# 定义EMC2_DEFAULT_TOOLTABLE路径，见config.h
-# add_compile_definitions(EMC2_DEFAULT_TOOLTABLE="${PROJECT_SOURCE_DIR}/sim.tbl")
+# 指定项目源码根目录，便于调试文件输入
+add_compile_definitions(__RS274_ROOT__="${PROJECT_SOURCE_DIR}/")
 # 定义ULAPI，见rtapi_*.h
 add_compile_definitions(ULAPI)
 # 使用snprintf代替rtapi_snprintf通过编译，使用标准库的snprintf
@@ -39,8 +52,17 @@ find_package(Boost COMPONENTS python REQUIRED)
 print_variable(Boost_VERSION)
 print_variable(Boost_FOUND)
 print_variable(Boost_INCLUDE_DIR)
+print_variable(Boost_INCLUDE_DIRS)
+print_variable(Boost_LIBRARY_DIRS)
 print_variable(Boost_LIBRARIES)
 print_variable(Boost_PYTHON_VERSION)
+
+# confirm boost_python version
+if(${Boost_PYTHON_VERSION} EQUAL 2.7)
+    message(STATUS  "Boost_PYTHON_VERSION:${Boost_PYTHON_VERSION} is 2.7")
+else()
+    message(FATAL_ERROR "Boost_PYTHON_VERSION:${Boost_PYTHON_VERSION} is not to 2.7")
+endif()
 
 # Python2::Development
 find_package(Python2 REQUIRED Development REQUIRED)
@@ -82,25 +104,39 @@ add_subdirectory(sai)
 
 print_variable(RS274_INCLUDE_FILES)
 
-## 配置find_packageinclude(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
+## 配置find_package
 
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/install)
-print_variable(CMAKE_INSTALL_PREFIX)
-
+# Note: INSTALL_RPATH ${Boost_LIBRARY_DIRS}
+# What:
+#   Set `INSTALL_RPATH` property to let the INSTALLED library have the search path
+#   of libboost_python27.so.1.0 at runtime
+# Why:
+#   When an excutable or another library links to the INSTALLED `rs274` dynamically,
+#   even though the excutable may link to libboost_python27,
+#   `librs274.so` need to know where to search for libboost_python27 itself !
+# Mention:
+#   This should be done, since libboost_python27 is often not a system lib,
+#   it needs to be set according to different systems.
+#   So this lib is recommanded to compile each time on a new operating system.
+#   However, it can also be used if LD_LIBRARY_PATH is set proporly 
+#   or the libboost_python27 path is included in /etc/ld.so.conf.
+#   I do this just to make runtime easier for compile test.
 set_target_properties(rs274
     PROPERTIES PUBLIC_HEADER "${RS274_INCLUDE_FILES}"
+    INSTALL_RPATH ${Boost_LIBRARY_DIRS}
 )
 
-install(TARGETS rs274
+install(
+    TARGETS rs274
     EXPORT rs274Targets
-    PUBLIC_HEADER DESTINATION include/rs274
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/rs274
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     # INCLUDES DESTINATION include/rs274
 )
-install(EXPORT rs274Targets
+install(
+    EXPORT rs274Targets
     NAMESPACE rs274::
     FILE rs274Targets.cmake
     DESTINATION lib/cmake/rs274
@@ -117,8 +153,8 @@ write_basic_package_version_file(
 )
 
 install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/rs274Config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/rs274ConfigVersion.cmake"
-    DESTINATION lib/cmake/rs274
+    ${CMAKE_CURRENT_BINARY_DIR}/rs274Config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/rs274ConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/rs274
 )
 

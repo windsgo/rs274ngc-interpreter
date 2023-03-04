@@ -17,6 +17,7 @@
  */
 #include "python_plugin.hh"
 
+int _task = 0; // lyf
 
 // extern "C" void initemctask(); // lyf
 extern "C" void initinterpreter();

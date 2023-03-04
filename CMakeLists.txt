@@ -100,7 +100,7 @@ add_subdirectory(rs274ngc) # librs274.so
 
 # binaries
 add_subdirectory(sai)
-# add_subdirectory(tests)
+add_subdirectory(tests)
 
 print_variable(RS274_INCLUDE_FILES)
 

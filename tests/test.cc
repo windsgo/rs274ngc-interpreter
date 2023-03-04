@@ -1,4 +1,4 @@
-#include <Python.h> // must be first header
+// #include <Python.h> // must be first header
 #include <iostream>
 #include "rs274ngc.hh"
 #include "canon.hh"

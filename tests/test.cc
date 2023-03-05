@@ -33,8 +33,22 @@ private:
 #define _P \
     std::cout << "\t[FUNCTION-AUTO-PRINT]" << __PRETTY_FUNCTION__ << std::endl;
 
+static void func_1(int m, double p, double q) {
+    std::cout << "user func_1(): " 
+        << " m:" << m 
+        << " p:" << p 
+        << " q:" << q << std::endl;
+    return ;
+}
+
+#include <memory>
+#include "rs274ngc_interp.hh"
 static void test_1() {
-    InterpBase *b = makeInterp();
+
+    // InterpBase *b = makeInterp();
+    auto b = std::make_unique<Interp>(); // allow auto delete
+
+    USER_DEFINED_FUNCTION_ADD(func_1, 1);
     b->init();
 
     b->open(__RS274_ROOT__ "test.ngc");
@@ -93,6 +107,8 @@ static void test_1() {
     char x[256];
     std::cout << b->file_name(x, sizeof(x)) << std::endl;
 
+    b->exit();
+
     // read_execute(b, "(this is a comment)");
     // read_execute(b, "G0X0Y0");
     // read_execute(b, "F100");
@@ -105,11 +121,9 @@ static void test_1() {
     // read_execute(b, "M2");
 
 
-    delete b;
+    // delete b;
 }
 
-#include <memory>
-#include "rs274ngc_interp.hh"
 
 static void test_2() {
     auto b = std::make_unique<Interp>(); // allow auto delete
@@ -124,8 +138,8 @@ int main(int argc, char** argv) {
 // this is junk that you have to define in exactly this way because of how mah
 // implemented the python "remap" functionality of the interpreter
 // (and it needs Python.h for the definition of struct inttab)
-// int _task = 0;
-// char _parameter_file_name[LINELEN];
+int _task = 0;
+char _parameter_file_name[LINELEN];
 // extern "C" void initinterpreter();
 // extern "C" void initemccanon();
 // extern "C" struct _inittab builtin_modules[];
@@ -267,7 +281,9 @@ void CLEAR_MOTION_OUTPUT_BIT(int index) {_P}
 void SET_AUX_OUTPUT_BIT(int index) {_P}
 void CLEAR_AUX_OUTPUT_BIT(int index) {_P}
 void SET_MOTION_OUTPUT_VALUE(int index, double value) {_P}
-void SET_AUX_OUTPUT_VALUE(int index, double value) {_P}
+void SET_AUX_OUTPUT_VALUE(int index, double value) {_P
+    std::cout << "aux: index:" << index << " value:" << value << std::endl;
+}
 int WAIT(int index, 
 		int input_type, 
 	        int wait_type, 
@@ -278,14 +294,27 @@ double GET_EXTERNAL_FEED_RATE() {_P}
 int GET_EXTERNAL_FLOOD() {_P}
 CANON_UNITS GET_EXTERNAL_LENGTH_UNIT_TYPE() {return CANON_UNITS_MM;}
 double GET_EXTERNAL_LENGTH_UNITS() {_P}
-double GET_EXTERNAL_ANGLE_UNITS() {_P}
+double GET_EXTERNAL_ANGLE_UNITS() {_P return 1.0;}
 int GET_EXTERNAL_MIST() {_P}
 CANON_MOTION_MODE GET_EXTERNAL_MOTION_CONTROL_MODE() {_P}
 double GET_EXTERNAL_MOTION_CONTROL_TOLERANCE() {_P}
 
-extern void SET_PARAMETER_FILE_NAME(const char *name) {_P}
-void GET_EXTERNAL_PARAMETER_FILE_NAME(char *filename, int max_size) {
-    snprintf(filename, max_size, "%s", "rs274ngc.var");
+extern void SET_PARAMETER_FILE_NAME(const char *name) {_P
+  strncpy(_parameter_file_name, name, PARAMETER_FILE_NAME_LENGTH);
+}
+void GET_EXTERNAL_PARAMETER_FILE_NAME(char *file_name, int max_size) {
+    _P
+        // Paranoid checks
+    if (0 == file_name)
+	return;
+
+    if (max_size < 0)
+	return;
+
+  if (strlen(_parameter_file_name) < (size_t)max_size)
+    strcpy(file_name, _parameter_file_name);
+  else
+    file_name[0] = 0;
 }
 CANON_PLANE GET_EXTERNAL_PLANE() {_P}
 double GET_EXTERNAL_POSITION_A() {_P}
@@ -333,7 +362,7 @@ int GET_EXTERNAL_ADAPTIVE_FEED_ENABLE() {_P}
 int GET_EXTERNAL_FEED_HOLD_ENABLE() {_P}
 int GET_EXTERNAL_DIGITAL_INPUT(int index, int def) {_P}
 double GET_EXTERNAL_ANALOG_INPUT(int index, double def) {_P}
-int GET_EXTERNAL_AXIS_MASK() { return 7; }
+int GET_EXTERNAL_AXIS_MASK() { return 0b111111; } // select axies to usr
 void FINISH(void) {
     std::cout << "[***FINISH]" << std::endl;
 }
@@ -344,6 +373,18 @@ void CANON_ERROR(const char *fmt, ...) {_P}
 void PLUGIN_CALL(int len, const char *call) {_P}
 void IO_PLUGIN_CALL(int len, const char *call) {_P}
 USER_DEFINED_FUNCTION_TYPE
-    USER_DEFINED_FUNCTION[USER_DEFINED_FUNCTION_NUM];
+    USER_DEFINED_FUNCTION[USER_DEFINED_FUNCTION_NUM] = {0};
+
+int USER_DEFINED_FUNCTION_ADD(USER_DEFINED_FUNCTION_TYPE func, int num)
+{
+  if (num < 0 || num >= USER_DEFINED_FUNCTION_NUM) {
+    return -1;
+  }
+
+  USER_DEFINED_FUNCTION[num] = func;
+
+  return 0;
+}
+
 int GET_EXTERNAL_OFFSET_APPLIED() {_P};
 EmcPose GET_EXTERNAL_OFFSETS(){_P};
